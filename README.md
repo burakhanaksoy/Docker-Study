@@ -4,8 +4,22 @@
   <img width="450" height="350" src="https://user-images.githubusercontent.com/31994778/123071595-76f77100-d41d-11eb-8641-93f18c90d28c.png">
   
 </p>
+
+<b>Table Of Contents</b> |
+------------ | 
+[What is Docker?](#first) 
+[VM vs Container](#vm-vs-cont)
+[Drawbacks of VMs](#vm-drawbacks)
+[Docker Architecture](#architecture)
+[Development Workflow](#architecture)
+[Docker Demo](#action)
+[Image vs Container](#image-vs-cont)
+[Linux Command Line](#linux-cli)
+[Port Binding](#port-binding)
  
+ <p id="first">
  <h2>What is Docker?</h2>
+ </p>
  
  <p>
   <b><i>"Docker is a platform for building, running, and shipping applications in a consistent manner, so if your application run flawlessly in your development machine, it can run and function the same way in other machines."</b></i>
@@ -44,7 +58,9 @@ As you can see here, while one application uses Node version 14, the other one u
 
 ```
 
+<p id="vm-vs-cont">
 <h2>Virtual Machines vs Containers</h2>
+</p>
 
 <b>Container</b> | <b>VM</b>
 ------------ | ------------- 
@@ -62,7 +78,9 @@ So, on a single physical machine, we can run two applications in isolation on tw
 
 All these are running on the same machine but with different isolated environments. That's one of the benefits of virtual machines.
 
+<p id="vm-drawbacks">
 <h3>Problems</h3>
+</p>
 
 - Each virtual machine needs a copy of an OS that needs to be licensed, patched, and monitored.
 - Slow to start, because the entire OS needs to be booted up, just like a physical computer.
@@ -81,7 +99,9 @@ All these are running on the same machine but with different isolated environmen
 - Need less hardware resources.
 - This means in a host, we can run 10s and 100s of containers side by side.
 
+<p id="architecture">
 <h2>Docker Architecture</h2>
+</p>
 
 Docker uses a `Client-Server` architecture. So it has a client component that talks to the server component using a `REST API`.
 
@@ -109,7 +129,9 @@ So,
 <img width="450" alt="Screen Shot 2021-06-23 at 1 28 39 PM" src="https://user-images.githubusercontent.com/31994778/123081760-f63d7280-d426-11eb-8c47-06a7de2c3fd2.png">
 </p>
 
+<p id="workflow">
 <h2>Development Workflow</h2>
+</p>
 
 1- We take an application and `dockerize` it. This means to make a small change so that it can be run by Docker.
  - How? We just add a `Dockerfile` to it.
@@ -141,7 +163,9 @@ We can push this image into `DockerHub`. DockerHub to Docker is like Github to G
   <img width="550" alt="Screen Shot 2021-06-23 at 2 17 43 PM" src="https://user-images.githubusercontent.com/31994778/123087949-d2315f80-d42d-11eb-898d-d5477f8279f3.png">
 </p>
 
+<p id="action">
 <h2>Docker in Action</h2>
+</p>
 
 We are going to make a small demo. In this demo, we will `dockerize` our 'hello-docker' application.
 
@@ -222,7 +246,9 @@ And run `docker run username/repository:tag`
 
 </p>
 
+<p id="image-vs-cont">
 <h3>Image vs Container</h3>
+</p>
 
 <b>Image</b> | <b>Container</b>
 ------------ | ------------- 
@@ -236,8 +262,9 @@ Docker Images are used to package up applications and pre-configured server envi
 Images can be shared on Docker Hub. | It makes no sense in sharing a running entity, always docker images are shared. |
 There is no such running state of Docker Image. | Containers uses RAM when created and in running state. |
 
-
+<p id="linux-cli">
 <h2>Linux Command Line</h2>
+</p>
 
 <b><i>We need to know about Linux CLI since Docker has its foundations in Linux, this is, Docker is built on basic Linux concepts.</b></i>
 
@@ -296,8 +323,9 @@ In Linux, we have `apt` (advanced package tool)
  
   <b>In Linux, everything is a file!</b>
   
-  
+  <p id="port-binding">
   <h2>Port Binding</h2>
+  </p>
   
   <i><b>Port binding is an important concept. Since a running container can be regarded as another machine, its ports are different from host's ports.</b></i>
 
