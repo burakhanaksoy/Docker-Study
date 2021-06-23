@@ -222,3 +222,78 @@ And run `docker run username/repository:tag`
 
 </p>
 
+<h3>Image vs Container</h3>
+
+<b>Image</b> | <b>Container</b>
+------------ | ------------- 
+Blueprint of the container | Instance of the image |
+Image is a logical entity | Container is a real world entity |
+Image is created only once | Containers are created any number of times using image. |
+Images are immutable | Containers changes only if old image is deleted and new is used to build the container. |
+Images does not require computing resource to work. | Containers requires computing resources to run as they run as Docker Virtual Machine. |
+To make a docker image, you have to write script in Dockerfile. | To make container from image, you have to run `docker build <image-name>` command |
+Docker Images are used to package up applications and pre-configured server environments. | Containers use server information and file system provided by image in order to operate. |
+Images can be shared on Docker Hub. | It makes no sense in sharing a running entity, always docker images are shared. |
+There is no such running state of Docker Image. | Containers uses RAM when created and in running state. |
+
+
+<h2>Linux Command Line</h2>
+
+<b><i>We need to know about Linux CLI since Docker has its foundations in Linux, this is, Docker is built on basic Linux concepts.</b></i>
+
+Go [here](https://hub.docker.com/_/ubuntu) and pull Ubuntu distribution of Linux
+
+After the image is pulled, execute `docker run -it ubuntu`. This will run the image `interactively`
+
+<p align="center">
+  <img width="500" alt="Screen Shot 2021-06-23 at 4 16 05 PM" src="https://user-images.githubusercontent.com/31994778/123103091-5ab7fc00-d43e-11eb-9959-e9575d8768d9.png">
+</p>
+
+Here, we successfully got to the shell. `root@574ab7f5810e:/#` means the following:
+
+- `root` represents the currently logged in user. `root` user has the highest priviledges.
+- `574ab7f5810e` is the name of the machine.
+- `/` represents where we are in the file system. This is the root directory. The root directory is the highest directory in the system.
+- `#` means we have the highest priviledges because we logged in as `root`. If we logged in as a normal user, we'd see `$`.
+
+<p align="center">
+  <img width="500" alt="Screen Shot 2021-06-23 at 4 22 25 PM" src="https://user-images.githubusercontent.com/31994778/123104109-56401300-d43f-11eb-9d45-f4df0747e8d2.png">
+</p>
+
+- Echo prints out the value of what is called
+- whoami prints the current logged in user
+- Echo $0 prints the location of the shell program
+- history prints the history of commands executed
+- !<number> runs the command listed in history
+- Linux is case sensitive and uses `/` for directories
+- pwd prints the working directory (print working directory)
+
+<h3>Package Managers</h3>
+  
+In software development, we currently use package managers such as `pip`, `npm` and so on.
+  
+In Linux, we have `apt` (advanced package tool)
+
+  We can use `apt` to install packages(executable files)
+  
+  <p align="center">
+  <img width="500" alt="Screen Shot 2021-06-23 at 4 49 12 PM" src="https://user-images.githubusercontent.com/31994778/123108277-f64b6b80-d442-11eb-89e9-df8b1fa88de8.png">
+  </p>
+  
+  Here, we just installed Python3
+
+  <p align="center">
+  <img width="500" alt="Screen Shot 2021-06-23 at 4 50 45 PM" src="https://user-images.githubusercontent.com/31994778/123108563-30b50880-d443-11eb-85db-49b08a443844.png">
+  </p>
+  
+  <h3>Linux File System</h3>
+  
+  
+  <p align="center" float="left">
+  <img width="350" height="280.91" alt="Screen Shot 2021-06-23 at 4 53 19 PM" src="https://user-images.githubusercontent.com/31994778/123109002-90abaf00-d443-11eb-9031-56c7a3d33c2b.png"> 
+    <img width="350" alt="Screen Shot 2021-06-23 at 4 53 29 PM" src="https://user-images.githubusercontent.com/31994778/123109027-93a69f80-d443-11eb-8dd9-dfa6940f1def.png">
+  </p>
+ 
+  <b>In Linux, everything is a file!</b>
+  
+  
