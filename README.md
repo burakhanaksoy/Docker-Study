@@ -11,7 +11,7 @@
 [VM vs Container](#vm-vs-cont)
 [Drawbacks of VMs](#vm-drawbacks)
 [Docker Architecture](#architecture)
-[Development Workflow](#architecture)
+[Development Workflow](#workflow)
 [Docker Demo](#action)
 [Image vs Container](#image-vs-cont)
 [Linux Command Line](#linux-cli)
