@@ -297,3 +297,36 @@ In Linux, we have `apt` (advanced package tool)
   <b>In Linux, everything is a file!</b>
   
   
+  <h2>Port Binding</h2>
+  
+  <i><b>Port binding is an important concept. Since a running container can be regarded as another machine, its ports are different from host's ports.</b></i>
+
+  <p align="center">
+  <img width="500" alt="Screen Shot 2021-06-23 at 8 12 17 PM" src="https://user-images.githubusercontent.com/31994778/123139874-5819ce80-d45f-11eb-9063-6ef570a1f37e.png">
+  </p>
+  
+  Here, the first container is bound with host's 5000 port to its 5000 port.
+  
+  The second ant third containers both have their 3000 port bound to host's 3000 and 3001 ports. 
+  
+  >To put it more clearly, when you send a request to port 5000 from your computer, it will interact with port 5000 running container of Docker. Also, when you send a request to port 3000 of your computer, it will interact with port 3000 of container, and the same thing goes for port 3001 of your computer as well.
+  
+  Let's say that you already started running an `nginx` container with `docker run -p 5000:3000 nginx:1.20.1`
+  
+  <p align="center">
+    <img width="500" alt="Screen Shot 2021-06-23 at 8 20 15 PM" src="https://user-images.githubusercontent.com/31994778/123140853-7207e100-d460-11eb-88c8-1a4085056978.png">
+  </p>
+  
+  with `docker ps` we can see that our container is up and running..
+  
+  if you want to start another container with same host port though, it will print out error. (Port is already allocated)
+  
+  <p align="center">
+  <img width="500" alt="Screen Shot 2021-06-23 at 8 21 27 PM" src="https://user-images.githubusercontent.com/31994778/123141033-9c599e80-d460-11eb-8dd6-738b231a9489.png">
+  </p>
+  
+  When we bind host's 5001 port to container 3000, we can see that both containers are running without any problems.
+  
+  <p align="center">
+    <img width="500" alt="Screen Shot 2021-06-23 at 8 24 27 PM" src="https://user-images.githubusercontent.com/31994778/123141492-1db13100-d461-11eb-8951-5a089ce1b0d4.png">
+  </p>
