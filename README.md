@@ -17,6 +17,7 @@
 [Linux Command Line](#linux-cli)
 [Port Binding](#port-binding)
 [Docker Network](#docker-network)
+[Docker Compose](#docker-compose)
  
  <p id="first">
  <h2>What is Docker?</h2>
@@ -439,4 +440,120 @@ After running these, we can check the connection's success status by `docker log
   
   <p align="center">
   <img width="500" alt="Screen Shot 2021-06-24 at 11 06 12 AM" src="https://user-images.githubusercontent.com/31994778/123226345-3f033300-d4dc-11eb-921f-12e5b77ceb68.png">
+  </p>
+
+<p id="docker-compose">
+  <h2>Docker Compose</h2>
+  </p>
+  
+  <b><i>"Docker Compose is used for running Docker containers as an alternative to manually typing docker run ... from terminal."</b></i>
+  
+  So far, we have run two Docker containers, and we used the following codes on terminal to run them.
+  
+```
+docker run -p 27017:27017 -d \
+-e MONGO_INITDB_ROOT_USERNAME=admin \
+-e MONGO_INITDB_ROOT_PASSWORD=password \
+--namemongodb --net mongo-network mongo
+```
+```
+docker run -p 8081:8081 -d \
+-e ME_CONFIG_MONGODB_SERVER=mongo-db \
+-e ME_CONFIG_MONGODB_ADMINUSERNAME=admin \
+-e ME_CONFIG_MONGODB_ADMINPASSWORD=password \
+--net mongo-network --name mongo-express mongo-express
+```
+
+This was super tedious and error-prone. It's always good to do things in a more structured manner. Docker Compose helps us doing that.
+
+<b><i>Docker Compose is a `.yaml` file.</b></i>
+
+ <p align="center">
+  <img width="550" alt="Screen Shot 2021-06-24 at 12 56 01 PM" src="https://user-images.githubusercontent.com/31994778/123244857-f738d780-d4ec-11eb-95f7-f60bdcf16522.png">
+
+</p>
+  
+  This is the Docker Compose yaml structure. Here, we do a translation from docker run command to .yaml file.
+  
+  ```yaml
+  version: '3'
+  services:
+    mongodb:
+      image: mongo
+      ports:
+      - 27017:27017
+      environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+```
+
+Here, 
+
+- version: '3' -> <b>Version of Docker Compose</b>
+- services: -> <b>Container list is under services</b>
+  - mongodb: -> <b>Container name</b>
+  - ports: -> <b>HOST:CONTAINER</b>
+  - environment: -> <b>Environment variables</b>
+
+<b>As you can see, we do not have to declare --network flag here. This is just so because Docker Compose runs containers in the same Docker network.</b>
+
+Together with mongo-express,
+
+```yaml
+version: '3'
+services:
+  mongodb:
+    image: mongo
+    ports:
+    - 27017:27017
+    environment:
+    - MONGO_INITDB_ROOT_USERNAME=admin
+    - MONGO_INITDB_ROOT_PASSWORD=password
+  mongo-express:
+    image: mongo-express
+    ports:
+    - 8081:8081
+    environment:
+    - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+    - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+    - ME_CONFIG_MONGODB_SERVER=mongodb
+```
+
+To remind once again, <b>Docker Compose takes care of creating a common network.</b>
+
+
+  <h3>Starting Containers Using Docker Compose</h3>
+  
+  `docker-compose -f mongo.yaml up`
+  
+   <p align="center">
+  <img width="550" alt="Screen Shot 2021-06-24 at 1 31 01 PM" src="https://user-images.githubusercontent.com/31994778/123248542-b773ef00-d4f0-11eb-84a9-2874f01a2f77.png">
+  </p>
+  
+<p align="center">
+  <img width="550" height="90" alt="Screen Shot 2021-06-24 at 1 33 59 PM" src="https://user-images.githubusercontent.com/31994778/123248746-f2762280-d4f0-11eb-85c2-02ee73f15610.png">
+  </p>
+  
+  In the following picture, you can see that Docker Compose is automatically creating a Docker network.
+  
+  <p align="center">
+  <img width="550" alt="Screen Shot 2021-06-24 at 1 38 31 PM" src="https://user-images.githubusercontent.com/31994778/123249385-919b1a00-d4f1-11eb-8477-c58b191a739f.png">
+  </p>
+  
+  As you can see, in the first line it says `Creating network "myapp_default" with the default driver`.
+  
+  <p align="center">
+  <img width="500" alt="Screen Shot 2021-06-24 at 1 45 54 PM" src="https://user-images.githubusercontent.com/31994778/123250277-8c8a9a80-d4f2-11eb-8ce4-c616e9af6b39.png">
+  </p>
+  
+  Name of the network is: `app_default`
+  
+  <b>Note that everytime we remove or stop a container and create or restart it again, we lose the data and all the container configurations! This problem will be fixed with `Volumes`.</b>
+  
+<h3>Stopping Containers Using Docker Compose</h3>
+    
+  <b>In order to stop both containers at the same time, we can use `docker-compose -f mongo.yaml down`.</b>
+  
+  <p align="center">
+  <img width="500" alt="Screen Shot 2021-06-24 at 1 58 10 PM" src="https://user-images.githubusercontent.com/31994778/123251769-3f0f2d00-d4f4-11eb-83e8-55509a7b4c02.png">
   </p>
