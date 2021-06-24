@@ -16,6 +16,7 @@
 [Image vs Container](#image-vs-cont)
 [Linux Command Line](#linux-cli)
 [Port Binding](#port-binding)
+[Docker Network](#docker-network)
  
  <p id="first">
  <h2>What is Docker?</h2>
@@ -357,4 +358,85 @@ In Linux, we have `apt` (advanced package tool)
   
   <p align="center">
     <img width="500" alt="Screen Shot 2021-06-23 at 8 24 27 PM" src="https://user-images.githubusercontent.com/31994778/123141492-1db13100-d461-11eb-8951-5a089ce1b0d4.png">
+  </p>
+
+<p id="docker-network">
+<h2>Docker Network</h2>
+</p>
+
+<b><i>"Docker creates its own isolated network in which Docker containers run."</b></i>
+
+<p align="center">
+    <img width="500" alt="Screen Shot 2021-06-24 at 9 47 32 AM" src="https://user-images.githubusercontent.com/31994778/123215527-3b1de380-d4d1-11eb-8956-f104c9b5207c.png">
+  </p>
+  
+  So, when we deploy two containers in the same Docker network, <b>They can talk to each other by just using the container name.</b> Without localhost, port number, etc.. <b>Just the container name.</b> Because they are in the same network.
+  
+  
+<p align="center">
+    <img width="500" alt="Screen Shot 2021-06-24 at 9 41 44 AM" src="https://user-images.githubusercontent.com/31994778/123215796-8c2dd780-d4d1-11eb-937e-821344cfded6.png">
+  </p>
+  
+  <b>Applications running outside the Docker network has to talk to these containers using localhost:port-number</b>
+  
+  <p align="center">
+    <img width="500" alt="Screen Shot 2021-06-24 at 9 42 07 AM" src="https://user-images.githubusercontent.com/31994778/123216007-c1d2c080-d4d1-11eb-8621-b9deb9e0fec7.png">
+  </p>
+  
+  Later on, when we package our application into its own Docker image and run as a Docker container, 3 Docker containers will be talking to each other in Docker network, i.e., Node application, MongoDB, and MongoExpress..
+  
+  <p align="center">
+  <img width="500" alt="Screen Shot 2021-06-24 at 9 42 27 AM" src="https://user-images.githubusercontent.com/31994778/123218874-e8462b00-d4d4-11eb-87f2-142050c1c52a.png">
+  </p>
+
+On top of these, we will connect to this network from outside by a Web Browser, as follows:
+
+  <p align="center">
+  <img width="500" alt="Screen Shot 2021-06-24 at 9 42 55 AM" src="https://user-images.githubusercontent.com/31994778/123219151-3c510f80-d4d5-11eb-90bd-101c4b0b3356.png">
+  </p>
+  
+  <h3>Creating Network</h3>
+  
+  Use `docker network create <network-name>`.
+  
+  After running `docker network create mongo-network` and `docker network ls`, we have the following picture:
+  
+  <p align="center">
+  <img width="500" alt="Screen Shot 2021-06-24 at 10 43 16 AM" src="https://user-images.githubusercontent.com/31994778/123222854-06158f00-d4d9-11eb-99c4-2909817bf364.png">
+  </p>
+
+So, since we want to run our mongo container and mongo-express container in this network, we have to provide network option as we start containers..
+
+```
+docker run -p 27017:27017 -d \
+-e MONGO_INITDB_ROOT_USERNAME=admin \
+-e MONGO_INITDB_ROOT_PASSWORD=password \
+--namemongodb --net mongo-network mongo
+```
+
+<b>Here, -e is for setting environment variables.</b>
+
+We also need to docker run mongo-express
+
+```
+docker run -p 8081:8081 -d \
+-e ME_CONFIG_MONGODB_SERVER=mongo-db \
+-e ME_CONFIG_MONGODB_ADMINUSERNAME=admin \
+-e ME_CONFIG_MONGODB_ADMINPASSWORD=password \
+--net mongo-network --name mongo-express mongo-express
+```
+After running these, we can check the connection's success status by `docker logs <container-name>`
+
+`docker logs mongo-express` gives us
+
+  <p align="center">
+  <img width="600" alt="Screen Shot 2021-06-24 at 11 02 00 AM" src="https://user-images.githubusercontent.com/31994778/123225690-9fde3b80-d4db-11eb-9f96-b6f95884adfc.png">
+  </p>
+  
+  In the beginning of the log, it says `Mongo Express server listening at http://0.0.0.0:8081`, so everything is okay.
+  
+  This is what we have at `localhost:8081`
+  
+  <p align="center">
+  <img width="500" alt="Screen Shot 2021-06-24 at 11 06 12 AM" src="https://user-images.githubusercontent.com/31994778/123226345-3f033300-d4dc-11eb-921f-12e5b77ceb68.png">
   </p>
