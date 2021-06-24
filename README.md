@@ -19,6 +19,7 @@
 [Docker Network](#docker-network)
 [Docker Compose](#docker-compose)
 [Dockerfile](#dockerfile)
+[Deploy Containerized App](#deploy-app)
  
  <p id="first">
  <h2>What is Docker?</h2>
@@ -630,3 +631,66 @@ We can get inside the shell by `docker exec -it <container id> /bin/sh`
  </p>
  
 <b>As you can see, everything we did in the Dockerfile is reflected here! The folders that we have is due to `COPY` and `MKDIR` commands we used.</b>
+
+<p id="deploy-app">
+<h2>Deploy Containerized App</h2>
+</p>
+
+1- Push the image you created to DockerHub.
+
+<p align="center">
+<img width="733" alt="Screen Shot 2021-06-24 at 7 13 12 PM" src="https://user-images.githubusercontent.com/31994778/123297440-3e8c8b80-d520-11eb-9506-1e7f2b80e02c.png">
+ </p>
+ 
+ I am going to use image `burakhanaksoy/my-app:2.2`.
+ 
+2- Change Docker compose .yaml file as follows:
+```yaml
+version: "3"
+services:
+  my-app:
+    image: burakhanaksoy/my-app:2.2
+    ports:
+      - 3000:3000
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+  mongo-express:
+    image: mongo-express
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+```
+
+Here, we just added this part:
+```yaml
+my-app:
+    image: burakhanaksoy/my-app:2.2
+    ports:
+      - 3000:3000
+```
+
+3- Start multiple containers with Docker compose as follows:
+
+`docker-compose -f  mongo.yaml up`
+
+<p align="center">
+  <img width="700" alt="Screen Shot 2021-06-24 at 7 16 43 PM" src="https://user-images.githubusercontent.com/31994778/123298004-c1ade180-d520-11eb-899c-296d1038226b.png">
+  </p>
+  
+4- Test!
+
+Go to localhost:3000, and
+
+<p align="center">
+  <img width="400" height="550" alt="Screen Shot 2021-06-24 at 7 17 45 PM" src="https://user-images.githubusercontent.com/31994778/123298177-e904ae80-d520-11eb-9589-9d2bd665d689.png">
+  </p>
+  
+  Voila!
