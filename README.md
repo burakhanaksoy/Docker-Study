@@ -18,6 +18,7 @@
 [Port Binding](#port-binding)
 [Docker Network](#docker-network)
 [Docker Compose](#docker-compose)
+[Dockerfile](#dockerfile)
  
  <p id="first">
  <h2>What is Docker?</h2>
@@ -557,3 +558,75 @@ To remind once again, <b>Docker Compose takes care of creating a common network.
   <p align="center">
   <img width="500" alt="Screen Shot 2021-06-24 at 1 58 10 PM" src="https://user-images.githubusercontent.com/31994778/123251769-3f0f2d00-d4f4-11eb-83e8-55509a7b4c02.png">
   </p>
+
+<p id="dockerfile">
+  <h2>Dockerfile</h2>
+  </p>
+ 
+ <b><i>"Dockerfile is a blueprint for creating Docker images."</b></i>
+ 
+We're gonna create a Docker image from our Node, JS application.
+
+- The first line of every Dockerfile is `FROM <some-image>`.
+- We have to base our image on a base image with `FROM`.
+- Second, we want to configure our environment variables with `ENV`. (Optional since we already set env vars in mongodb and mongo-express containers)
+- Third, `RUN`-> `RUN mkdir -p /home/app`
+- Fourth, `COPY` -> `COPY . /home/app`
+- Last one, `CMD` -> `CMD ["node","server.js"]`
+
+<b>Here, `COPY` and `RUN` are not interchangable since `COPY` copies files from the host machine to the container, but `RUN` runs commands inside a container.</b>
+
+<b>Also, `CMD` is an entry point command, which means that it can be only one in a Dockerfile, on the other hand there can be multiple `RUN` commands.</b>
+
+<b>Also, we are basing our image on a `Node` environment, which means that when the container is run, we don't have to install `Node`.</b>
+
+  <p align="center">
+<img width="230" alt="Screen Shot 2021-06-24 at 3 12 04 PM" src="https://user-images.githubusercontent.com/31994778/123260746-97e3c300-d4fe-11eb-9aa9-e1c782be1308.png">
+  </p>
+
+```Dockerfile
+FROM node:13-alpine
+
+RUN mkdir /home/app
+COPY . /home/app
+WORKDIR /home/app
+CMD ["node","server.js"]
+```
+
+<b>Dockerfile name must be "Dockerfile"</b>
+
+<h3>Building the Image</h3>
+
+`docker build -t my-app:1.0 .`
+
+Here, -t is used for naming the image as `my-app`.
+
+`my-app:1.0`'s `1.0` is the tag of this image. It can be anything we want. For example, it can be `my-app:version-1`.
+
+<p align="center">
+<img width="500" alt="Screen Shot 2021-06-24 at 3 22 22 PM" src="https://user-images.githubusercontent.com/31994778/123261908-01180600-d500-11eb-98ca-aac6f6df1658.png">
+  </p>
+
+After completion, we can run `docker images` and see
+
+<p align="center">
+<img width="500" alt="Screen Shot 2021-06-24 at 3 23 48 PM" src="https://user-images.githubusercontent.com/31994778/123262103-33296800-d500-11eb-8e9a-db2aa9f7ff3d.png">
+  </p>
+
+`my-app` is created with tag `1.0`.
+
+Then, run the container of the image with `docker run my-app:1.0`.
+
+<p align="center">
+<img width="500" alt="Screen Shot 2021-06-24 at 3 46 23 PM" src="https://user-images.githubusercontent.com/31994778/123265175-70432980-d503-11eb-95e5-aaab886fbdef.png">
+</p>
+
+Voila!
+
+We can get inside the shell by `docker exec -it <container id> /bin/sh`
+
+<p align="center">
+<img width="650" alt="Screen Shot 2021-06-24 at 3 52 53 PM" src="https://user-images.githubusercontent.com/31994778/123266040-4e967200-d504-11eb-97aa-1edc7e1512d3.png">
+ </p>
+ 
+<b>As you can see, everything we did in the Dockerfile is reflected here! The folders that we have is due to `COPY` and `MKDIR` commands we used.</b>
