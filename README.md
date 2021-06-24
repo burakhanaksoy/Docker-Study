@@ -20,6 +20,7 @@
 [Docker Compose](#docker-compose)
 [Dockerfile](#dockerfile)
 [Deploy Containerized App](#deploy-app)
+[Credits](#credits)
  
  <p id="first">
  <h2>What is Docker?</h2>
@@ -694,3 +695,13 @@ Go to localhost:3000, and
   </p>
   
   Voila!
+
+<p id="credits">
+<h2>Credits</h2>
+</p>
+
+We finally made it! It was a nice 101. I want to thank Nana from [TechWorld with Nana](https://www.youtube.com/channel/UCdngmbVKX1Tgre699-XLlUA) and Mosh Hamedani from [Programming with Mosh](https://www.youtube.com/channel/UCWv7vMbMWH4-V0ZXdmDpPBA) for their amazing teaching skills and videos on YouTube. I watched their videos and prepared this document.
+
+The videos I watched as I prepare this documentation is as follows:
+- [Docker Tutorial for Beginners [2021]](https://www.youtube.com/watch?v=pTFZFxd4hOI)
+- [Docker Tutorial for Beginners [FULL COURSE in 3 Hours]](https://www.youtube.com/watch?v=3c-iBn73dDE)
