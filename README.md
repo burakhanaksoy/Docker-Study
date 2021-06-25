@@ -20,6 +20,7 @@
 [Docker Compose](#docker-compose)
 [Dockerfile](#dockerfile)
 [Deploy Containerized App](#deploy-app)
+[Run the APP](#run-the-app)
 [Credits](#credits)
  
  <p id="first">
@@ -695,6 +696,31 @@ Go to localhost:3000, and
   </p>
   
   Voila!
+  
+  <p id="run-the-app">
+  <h2>Run the App</h2>
+  </p>
+  
+  To run the app:
+  1 - Clone the repository and `cd app`
+  
+  <p align="center">
+  <img width="500" alt="Screen Shot 2021-06-25 at 8 28 43 AM" src="https://user-images.githubusercontent.com/31994778/123374204-6ebf4300-d58f-11eb-8a8d-9ef9895c0c6e.png">
+  </p>
+  
+  2- In the directory, run `docker-compose -f mongo.yaml up`
+  
+   <p align="center">
+  <img width="600" alt="Screen Shot 2021-06-25 at 8 31 26 AM" src="https://user-images.githubusercontent.com/31994778/123374550-f442f300-d58f-11eb-82a9-9967b6b0a394.png">
+  </p>
+  
+  3- Test!
+  
+  Go to `localhost:3000`
+  
+   <p align="center">
+  <img width="350" height="450" alt="Screen Shot 2021-06-25 at 8 34 38 AM" src="https://user-images.githubusercontent.com/31994778/123374688-31a78080-d590-11eb-85b9-dc07a18af695.png">
+  </p>
 
 <p id="credits">
 <h2>Credits</h2>
