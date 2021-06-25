@@ -21,6 +21,7 @@
 [Dockerfile](#dockerfile)
 [Deploy Containerized App](#deploy-app)
 [Run the APP](#run-the-app)
+[Docker Volumes](#docker-volumes)
 [Credits](#credits)
  
  <p id="first">
@@ -721,6 +722,214 @@ Go to localhost:3000, and
    <p align="center">
   <img width="350" height="450" alt="Screen Shot 2021-06-25 at 8 34 38 AM" src="https://user-images.githubusercontent.com/31994778/123374688-31a78080-d590-11eb-85b9-dc07a18af695.png">
   </p>
+
+
+<p id="docker-volumes">
+  <h2>Docker Volumes</h2>
+  </p>
+  
+  <b><i>"Docker Volumes are used for data persistence in Docker."</b></i>
+
+ <p align="center">
+<img width="500" alt="Screen Shot 2021-06-25 at 5 49 53 PM" src="https://user-images.githubusercontent.com/31994778/123442667-cb494f00-d5dd-11eb-96b2-f8a91188e07e.png">
+  </p>
+
+<h3>When do we need Docker Volumes?</h3>
+
+
+There might be different scenarios in which we might have to use Docker Volumes. One of them is data persistence.
+- As we experienced here, using mongodb, or any other db, as a container itself is not enough for keeping the state of the db.
+- This is to say that everytime we restart db container, our data is gone!
+
+<b>Docker Volumes is used to help maintain the state (data) of the db.</b>
+
+ <p align="center">
+  <img width="500" alt="Screen Shot 2021-06-25 at 5 52 35 PM" src="https://user-images.githubusercontent.com/31994778/123443024-2da24f80-d5de-11eb-892a-2f9c91812a5f.png">
+  </p>
+  
+  Here, our container has its own virtual file system and whenever we stop/start the container, data in its virtual file system is gone and starts from a fresh state.
+  
+  <b>Through Docker Volumes we actually mount the physical file system of our host to the virtual file system inside the container.</b>
+
+ <p align="center">
+  <img width="500" alt="Screen Shot 2021-06-25 at 6 29 41 PM" src="https://user-images.githubusercontent.com/31994778/123448315-76103c00-d5e3-11eb-9051-cdba0d34a94d.png">
+  </p>
+
+Here, one thing is very important to note. <b>File systems are `replicated` between host and container. This is to say that when some data change inside host file system, `same change happends inside container file system`, and vice-versa.</b>
+
+So even though we restart the container with a fresh state, it's file system is automatically cloned to the host's file system and this solves the problem.
+
+<h3>3 Volume Types</h3>
+
+<h4>Host Volumes</h4>
+
+- `docker run -v /home/mount/data:/var/lib/mysql/data`
+- Here, the first one is the host file system directory, second one is the container file system directory.
+- In this type, you can decide where on the host file system the reference is made
+
+<p align="center">
+  <img width="350" alt="Screen Shot 2021-06-25 at 6 37 53 PM" src="https://user-images.githubusercontent.com/31994778/123449871-bfad5680-d5e4-11eb-90c3-ef82393f8040.png">
+  </p>
+  
+<h4>Automaticly Created Directory Volumes</h4>
+
+In this type, you only specify the `container` file directory. We don't specify which directory on the host should be mounted.
+
+`docker run -v /var/lib/mysql/data`
+
+<b>For each container a folder is generated that gets mounted.</b>
+
+<p align="center">
+<img width="350" alt="Screen Shot 2021-06-25 at 9 08 27 PM" src="https://user-images.githubusercontent.com/31994778/123467878-ae227980-d5f9-11eb-94be-d9ac43e61e83.png">
+  </p>
+
+These types of volumes are called `Anonymous Volumes` because you don't have a reference to this automatically generated folder.
+
+<h4>Named Volumes</h4>
+
+This is very similar to the `Automatically Created Directory` volume type, but it differs in that <b>it specifies the name of the folder in the host file system.</b>
+
+`docker run -v name:/var/lib/mysql/data`
+
+<b>This type should be used because it's very beneficial and succinct.</b>
+
+<h4>Docker Volumes in Docker Compose</h4>
+
+<p align="center">
+<img width="350" alt="Screen Shot 2021-06-25 at 9 15 55 PM" src="https://user-images.githubusercontent.com/31994778/123468550-95669380-d5fa-11eb-9911-b54839307df4.png">
+  </p>
+
+Here we use a `Named Volume` and `db-data` is the reference name and `/var/lib/mysql/data` is the name of the path in the container.
+
+You may have other container instructions in Docker compose .yaml file, but you need to write
+
+```yaml
+volumes:
+  db-data
+```
+once again at the end of the .yaml file.
+
+<p align="center">
+  <img width="350" alt="Screen Shot 2021-06-25 at 9 21 50 PM" src="https://user-images.githubusercontent.com/31994778/123469216-6a307400-d5fb-11eb-9d68-ec551366c226.png">
+  </p>
+
+here,
+
+```yaml
+volumes:
+  db-data
+```
+
+should be at the same level as `services`.
+
+<h4>Implementation</h4>
+
+1- Change the `Docker Compose .yaml` file.
+
+```yaml
+version: "3"
+services:
+  frontend:
+    image: burakhanaksoy/frontend:1.0
+    ports:
+      - 8080:8080
+  backend:
+    image: burakhanaksoy/backend:1.0
+    ports:
+      - 8000:8000
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      - mongo-data:/data/db
+  mongo-express:
+    image: mongo-express
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+volumes:
+  mongo-data:
+    driver: local
+```
+
+Here, the last part
+
+```yaml
+volumes:
+  mongo-data:
+    driver: local
+```
+
+here, `driver: local` is an additional information for Docker so that it creates a physical storage on a local file system.
+
+`mongo-data` is the name reference for the volume.
+
+And also inside
+
+```yaml
+mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      - mongo-data:/data/db
+```
+
+the last part
+
+```yaml
+volumes:
+      - mongo-data:/data/db
+```
+
+here `/data/db` is the path inside the mongodb container. <b>It has to be the path where MongoDB persists its data.</b>
+
+<b><i>In order to find the right filesystem path, in our case, for MongoDB, is `/data/db`, we can make a search on the Internet.</b></i>
+
+<p align="center">
+  <img width="550" alt="Screen Shot 2021-06-25 at 9 59 13 PM" src="https://user-images.githubusercontent.com/31994778/123473013-a31f1780-d600-11eb-8ecd-114a6ad1ee5c.png">
+  </p>
+  
+  We can also check if this path exists by `docker exec -it <container-id> /bin/sh`
+  
+  <p align="center">
+ <img width="800" alt="Screen Shot 2021-06-25 at 10 03 18 PM" src="https://user-images.githubusercontent.com/31994778/123473402-31939900-d601-11eb-9634-487bf82874ea.png">
+  </p>
+  
+  <b>Note that each db has it's specific filesystem path, in other words path would likely to be different for MySQL or PostgreSQL. We should consult on the Internet.</b>
+  
+  For MySQL:`var/lib/mysql`
+  
+  For PostgreSQL:`var/lib/postgresql/data`
+
+2- Run `docker-compose -f app.yaml up`
+
+ <p align="center">
+  <img width="672" alt="Screen Shot 2021-06-25 at 10 06 43 PM" src="https://user-images.githubusercontent.com/31994778/123473746-ac5cb400-d601-11eb-83b4-60a05ee388d0.png">
+  </p>
+
+3- Test!
+
+Persists data into the DB and run `docker-compose -f app.yaml up` and `docker-compose -f app.yaml down` several times.
+
+You'll see that our data won't disappear.
+
+Awesome!
+
+<p align="center">
+ <img width="600" alt="Screen Shot 2021-06-25 at 10 20 39 PM" src="https://user-images.githubusercontent.com/31994778/123475133-a10a8800-d603-11eb-829a-df6acadf35d5.png">
+  </p>
+
 
 <p id="credits">
 <h2>Credits</h2>
