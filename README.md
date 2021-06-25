@@ -416,7 +416,7 @@ So, since we want to run our mongo container and mongo-express container in this
 docker run -p 27017:27017 -d \
 -e MONGO_INITDB_ROOT_USERNAME=admin \
 -e MONGO_INITDB_ROOT_PASSWORD=password \
---namemongodb --net mongo-network mongo
+--name mongodb --net mongo-network mongo
 ```
 
 <b>Here, -e is for setting environment variables.</b>
